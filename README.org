@@ -1,14 +1,14 @@
-* Taiwan-calendar
+* taiwan-holidays
 Localized calendar for Emacsers in Taiwan.
 
 ** Installation
 =git clone= then add following settings into your config file:
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/git/taiwan-calendar/")
-(require 'taiwan-calendar)
+(add-to-list 'load-path "~/.emacs.d/git/taiwan-holidays.el/")
+(require 'taiwan-holidays)
 (setq mark-holidays-in-calendar t)
-(setq taiwan-calendar-important-holidays taiwan-calendar-taiwan-holidays)
-(setq calendar-holidays taiwan-calendar-important-holidays)
+(setq taiwan-holidays-important-holidays taiwan-holidays-taiwan-holidays)
+(setq calendar-holidays taiwan-holidays-important-holidays)
 #+END_SRC
 
 Then =M-x calendar= you'll see what changed.

@@ -1,10 +1,10 @@
-;;; taiwan-calendar.el --- Localized calendar for Emacsers in Taiwan.
+;;; taiwan-holidays.el --- Localized calendar for Emacsers in Taiwan.
 
 ;; Copyright (C) 2006, 2007, 2008, 2009, 2010 William Xu
 ;; Copyright (C) 2015 Kuan Yen
 ;; Author: kuanyui <azazabc123@gmail.com>
 ;; Version: 2.4
-;; Url: http://github.com/emacs-tw/taiwan-calendar.el
+;; Url: http://github.com/emacs-tw/taiwan-holidays.el
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -28,18 +28,18 @@
 ;;   - Display holiday, lunar, horoscope, zodiac, solar term info on mode line
 ;;   - Define holidays using `holiday-lunar', `holiday-solar-term'
 ;;   - Highlight holidays based on different priorities
-;;   - Add `taiwan-calendar-taiwan-holidays', `taiwan-calendar-japanese-holidays'.
+;;   - Add `taiwan-holidays-taiwan-holidays', `taiwan-holidays-japanese-holidays'.
 ;;
 ;; To use, add something like the following to your .emacs:
-;;     (require 'taiwan-calendar)
+;;     (require 'taiwan-holidays)
 ;;     (setq mark-holidays-in-calendar t)
-;;     (setq taiwan-calendar-important-holidays taiwan-calendar-taiwan-holidays)
-;;     (setq calendar-holidays taiwan-calendar-important-holidays)
+;;     (setq taiwan-holidays-important-holidays taiwan-holidays-taiwan-holidays)
+;;     (setq calendar-holidays taiwan-holidays-important-holidays)
 ;;
 
 ;;; History
 
-;; `taiwan-calendar.el' is forked from `cal-china-x.el', written by
+;; `taiwan-holidays.el' is forked from `cal-china-x.el', written by
 ;; William Xu <william.xwl@gmail.com>
 
 ;; `cal-china-x.el' is an early derived work from `chinese-calendar.el' written by
@@ -62,27 +62,27 @@
 (defvar displayed-month)
 (defvar displayed-year)
 
-(defconst taiwan-calendar-celestial-stem
+(defconst taiwan-holidays-celestial-stem
   ["甲" "乙" "丙" "丁" "戊" "已" "庚" "辛" "壬" "癸"])
 
-(defconst taiwan-calendar-terrestrial-branch
+(defconst taiwan-holidays-terrestrial-branch
   ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
 
-(defconst taiwan-calendar-days
+(defconst taiwan-holidays-days
   ["日" "一" "二" "三" "四" "五" "六"])
 
-(defconst taiwan-calendar-month-name
+(defconst taiwan-holidays-month-name
   ["正月" "二月" "三月" "四月" "五月" "六月" "七月" "八月" "九月" "十月"
    "十一月" "腊月"])
 
-(defconst taiwan-calendar-day-name
+(defconst taiwan-holidays-day-name
   ["初一" "初二" "初三" "初四" "初五" "初六" "初七" "初八" "初九" "初十"
    "十一" "十二" "十三" "十四" "十五" "十六" "十七" "十八" "十九"  "廿"
    "廿一" "廿二" "廿三" "廿四" "廿五" "廿六" "廿七" "廿八" "廿九" "三十"
    "卅一" "卅二" "卅三" "卅四" "卅五" "卅六" "卅七" "卅八" "卅九" "卅十"])
 
 (defvar chinese-date-diary-pattern
-  `((year "年" month "月" day "日" " 星期[" ,(mapconcat 'identity taiwan-calendar-days "") "]")
+  `((year "年" month "月" day "日" " 星期[" ,(mapconcat 'identity taiwan-holidays-days "") "]")
     ,@(if (> emacs-major-version 22)
           diary-iso-date-forms
         '((month "[-/]" day "[^-/0-9]")
@@ -91,7 +91,7 @@
           (year "-" monthname "-" day "[^0-9]")
           (dayname "\\W")))))
 
-(defconst taiwan-calendar-horoscope-name
+(defconst taiwan-holidays-horoscope-name
   '(((3 21) (4 19) "白羊")
     ((4 20) (5 20) "金牛")
     ((5 21) (6 21) "雙子")
@@ -105,12 +105,12 @@
     ((1 20) (2 18) "水瓶")
     ((2 19) (3 20) "雙魚")))
 
-(defconst taiwan-calendar-zodiac-name
+(defconst taiwan-holidays-zodiac-name
   ["鼠" "牛" "虎" "兔" "龍" "蛇" "馬" "羊" "猴" "鷄" "狗" "豬"]
   "The zodiac(生肖) when you were born.")
 
 ;; for ref, http://www.geocities.com/calshing/chinesecalendar.htm
-(defconst taiwan-calendar-solar-term-name
+(defconst taiwan-holidays-solar-term-name
   ["小寒" "大寒" "立春" "雨水" "驚蟄" "春分"
    "清明" "穀雨" "立夏" "小滿" "芒種" "夏至"
    "小暑" "大暑" "立秋" "處暑" "白露" "秋分"
@@ -122,7 +122,7 @@ There is a short poem for remembering,
 春雨驚春清穀天，夏滿芒夏暑相連，
 秋處露秋寒霜降，冬雪雪冬小大寒。")
 
-(defconst taiwan-calendar-japanese-holidays
+(defconst taiwan-holidays-japanese-holidays
   '((holiday-fixed 1 1 "元旦")
     (holiday-fixed 1 2 "公務員法定休息日")
     (holiday-fixed 1 3 "公務員法定休息日")
@@ -148,7 +148,7 @@ There is a short poem for remembering,
   "Pre-defined japanese public holidays.
 You can add this to your `calendar-holidays'.")
 
-(defvar taiwan-calendar-taiwan-holidays
+(defvar taiwan-holidays-taiwan-holidays
   '((holiday-fixed 1 1 "元旦")
     (holiday-lunar 12 30 "除夕" 0)
     (holiday-lunar 1 1 "春節" 0)
@@ -166,51 +166,51 @@ You can add this to your `calendar-holidays'.")
 
 ;;; Interfaces
 
-(defgroup taiwan-calendar nil
+(defgroup taiwan-holidays nil
   "Chinese calendar extentions and more."
   :group 'calendar)
 
-(defcustom taiwan-calendar-important-holidays '()
-  "Highlighted by `taiwan-calendar-important-holiday-face'."
+(defcustom taiwan-holidays-important-holidays '()
+  "Highlighted by `taiwan-holidays-important-holiday-face'."
   :type 'symbol
-  :group 'taiwan-calendar)
+  :group 'taiwan-holidays)
 
-(defcustom taiwan-calendar-general-holidays '()
-  "Highlighted by `taiwan-calendar-general-holiday-face'."
+(defcustom taiwan-holidays-general-holidays '()
+  "Highlighted by `taiwan-holidays-general-holiday-face'."
   :type 'symbol
-  :group 'taiwan-calendar)
+  :group 'taiwan-holidays)
 
-(defface taiwan-calendar-important-holiday-face
+(defface taiwan-holidays-important-holiday-face
   '((((class color) (background light))
      (:foreground "#ffffff" :background "#a40000"))
     (((class color) (background dark))
      (:foreground "#ffffff" :background "#a40000"))
     (t
      :inverse-video t))
-  "Face for indicating `taiwan-calendar-important-holidays'."
-  :group 'taiwan-calendar)
+  "Face for indicating `taiwan-holidays-important-holidays'."
+  :group 'taiwan-holidays)
 
-(defface taiwan-calendar-general-holiday-face
+(defface taiwan-holidays-general-holiday-face
   '((((class color) (background light))
      (:foreground "#008700" :background "#d7ff87"))
     (((class color) (background dark))
      (:foreground "#a1db00" :background "#5a5a5a"))
     (t
      :inverse-video t))
-  "Face for indicating `taiwan-calendar-general-holidays'."
-  :group 'taiwan-calendar)
+  "Face for indicating `taiwan-holidays-general-holidays'."
+  :group 'taiwan-holidays)
 
-(defcustom taiwan-calendar-custom-week-start-date '()
+(defcustom taiwan-holidays-custom-week-start-date '()
   "The month and day of first Monday in your custom week diary.
 
 e.g., '(9 20) means from every year, Sep 20th will be defined as
 the first week.  This could be useful in some circumstances, such
 as schools, where people may use some specific school diary."
   :type 'symbol
-  :group 'taiwan-calendar)
+  :group 'taiwan-holidays)
 
 ;;;###autoload
-(defun taiwan-calendar-birthday-from-chinese (lunar-month lunar-day)
+(defun taiwan-holidays-birthday-from-chinese (lunar-month lunar-day)
   "Return birthday date this year in Gregorian form.
 
 LUNAR-MONTH and LUNAR-DAY are date number used in chinese lunar
@@ -280,9 +280,9 @@ shows that it does not recognize Run Yue at all."
 ;;;###autoload
 (defun holiday-solar-term (solar-term str)
   "A holiday(STR) on SOLAR-TERM day.
-See `taiwan-calendar-solar-term-name' for a list of solar term names ."
-  (taiwan-calendar-sync-solar-term displayed-year)
-  (let ((terms taiwan-calendar-solar-term-alist)
+See `taiwan-holidays-solar-term-name' for a list of solar term names ."
+  (taiwan-holidays-sync-solar-term displayed-year)
+  (let ((terms taiwan-holidays-solar-term-alist)
         i date)
     (while terms
       (setq i (car terms)
@@ -291,7 +291,7 @@ See `taiwan-calendar-solar-term-name' for a list of solar term names ."
         (let ((m (caar i))
               (y (caddar i)))
           ;; '(11 12 1), '(12 1 2)
-          (when (or (and (taiwan-calendar-cross-year-view-p)
+          (when (or (and (taiwan-holidays-cross-year-view-p)
                          (or (and (= displayed-month 12)
                                   (= m 1)
                                   (= y (1+ displayed-year)))
@@ -303,16 +303,16 @@ See `taiwan-calendar-solar-term-name' for a list of solar term names ."
                   date (car i))))))
     (holiday-fixed (car date) (cadr date) str)))
 
-(defun taiwan-calendar-calendar-display-form (date)
+(defun taiwan-holidays-calendar-display-form (date)
   (if (equal date '(0 0 0))
       ""
     (format "%04d年%02d月%02d日 %s"
             (calendar-extract-year date)
             (calendar-extract-month date)
             (calendar-extract-day date)
-            (taiwan-calendar-day-name date))))
+            (taiwan-holidays-day-name date))))
 
-(defun taiwan-calendar-chinese-date-string (date)
+(defun taiwan-holidays-chinese-date-string (date)
   (let* ((cn-date (calendar-chinese-from-absolute
                    (calendar-absolute-from-gregorian date)))
          (cn-year  (cadr   cn-date))
@@ -320,16 +320,16 @@ See `taiwan-calendar-solar-term-name' for a list of solar term names ."
          (cn-day   (cadddr cn-date)))
     (format "%s%s年%s%s%s(%s)%s"
             (calendar-chinese-sexagesimal-name cn-year)
-            (aref taiwan-calendar-zodiac-name (% (1- cn-year) 12))
-            (aref taiwan-calendar-month-name (1-  (floor cn-month)))
+            (aref taiwan-holidays-zodiac-name (% (1- cn-year) 12))
+            (aref taiwan-holidays-month-name (1-  (floor cn-month)))
             (if (integerp cn-month) "" "(閏月)")
-            (aref taiwan-calendar-day-name (1- cn-day))
-            (taiwan-calendar-get-horoscope (car date) (cadr date))
-            (taiwan-calendar-get-solar-term date))))
+            (aref taiwan-holidays-day-name (1- cn-day))
+            (taiwan-holidays-get-horoscope (car date) (cadr date))
+            (taiwan-holidays-get-solar-term date))))
 
-(defun taiwan-calendar-setup ()
+(defun taiwan-holidays-setup ()
   (setq calendar-date-display-form
-	'((taiwan-calendar-calendar-display-form
+	'((taiwan-holidays-calendar-display-form
            (mapcar (lambda (el) (string-to-number el))
                    (list month day year)))))
 
@@ -340,24 +340,24 @@ See `taiwan-calendar-solar-term-name' for a list of solar term names ."
         (append calendar-font-lock-keywords
                 '(("[0-9]+年\\ *[0-9]+月" . font-lock-function-name-face))))
 
-  (setq calendar-chinese-celestial-stem taiwan-calendar-celestial-stem
-	calendar-chinese-terrestrial-branch taiwan-calendar-terrestrial-branch)
+  (setq calendar-chinese-celestial-stem taiwan-holidays-celestial-stem
+	calendar-chinese-terrestrial-branch taiwan-holidays-terrestrial-branch)
 
   (setq calendar-mode-line-format
         (list
          (calendar-mode-line-entry 'calendar-scroll-right "previous month" "<")
          "Calendar"
 
-         '(taiwan-calendar-get-holiday date)
+         '(taiwan-holidays-get-holiday date)
 
          '(concat (calendar-date-string date t)
                   (format " 第%d周"
-                          (funcall (if taiwan-calendar-custom-week-start-date
-                                       'taiwan-calendar-custom-week-of-date
-                                     'taiwan-calendar-week-of-date)
+                          (funcall (if taiwan-holidays-custom-week-start-date
+                                       'taiwan-holidays-custom-week-of-date
+                                     'taiwan-holidays-week-of-date)
                                    date)))
 
-         '(taiwan-calendar-chinese-date-string date)
+         '(taiwan-holidays-chinese-date-string date)
 
          ;; (concat
          ;;  (calendar-mode-line-entry 'calendar-goto-info-node "read Info on Calendar"
@@ -381,16 +381,16 @@ See `taiwan-calendar-solar-term-name' for a list of solar term names ."
 
 ;;; Implementations
 
-(defun taiwan-calendar-day-name (date)
+(defun taiwan-holidays-day-name (date)
   "Chinese day name in a week, like `星期一'."
-  (concat "星期" (aref taiwan-calendar-days (calendar-day-of-week date))))
+  (concat "星期" (aref taiwan-holidays-days (calendar-day-of-week date))))
 
-(defun taiwan-calendar-day-short-name (num)
+(defun taiwan-holidays-day-short-name (num)
   "Short chinese day name in a week, like `一'. NUM is from 0..6
 in a week."
-  (aref taiwan-calendar-days num))
+  (aref taiwan-holidays-days num))
 
-(defun taiwan-calendar-get-horoscope (month day)
+(defun taiwan-holidays-get-horoscope (month day)
   "Return horoscope(星座) on MONTH(1-12) DAY(1-31)."
   (catch 'return
     (mapc
@@ -400,7 +400,7 @@ in a week."
          (when (or (and (= month (car start)) (>= day (cadr start)))
                    (and (= month (car end)) (<= day (cadr end))))
            (throw 'return (caddr el)))))
-     taiwan-calendar-horoscope-name)))
+     taiwan-holidays-horoscope-name)))
 
 (defun holiday-chinese-new-year ()
   "Date of Chinese New Year."
@@ -417,43 +417,43 @@ in a week."
                           (calendar-chinese-sexagesimal-name
                            (+ y 57))))))))))
 
-(defun taiwan-calendar-get-solar-term (date)
+(defun taiwan-holidays-get-solar-term (date)
   (let ((year (calendar-extract-year date)))
-    (taiwan-calendar-sync-solar-term year)
-    (or (cdr (assoc date taiwan-calendar-solar-term-alist)) "")))
+    (taiwan-holidays-sync-solar-term year)
+    (or (cdr (assoc date taiwan-holidays-solar-term-alist)) "")))
 
-(defun taiwan-calendar-solar-term-alist-new (year)
+(defun taiwan-holidays-solar-term-alist-new (year)
   "Return a solar-term alist for YEAR."
   (loop for i from 0 upto 23
 
-        for date = (taiwan-calendar-next-solar-term `(1 1 ,year))
-        then (setq date (taiwan-calendar-next-solar-term date))
+        for date = (taiwan-holidays-next-solar-term `(1 1 ,year))
+        then (setq date (taiwan-holidays-next-solar-term date))
 
         with solar-term-alist = '()
 
-        collect (cons date (aref taiwan-calendar-solar-term-name i))
+        collect (cons date (aref taiwan-holidays-solar-term-name i))
         into solar-term-alist
 
         finally return solar-term-alist))
 
-(defun taiwan-calendar-gregorian-from-astro (a)
+(defun taiwan-holidays-gregorian-from-astro (a)
   (calendar-gregorian-from-absolute
    (floor (calendar-astro-to-absolute a))))
 
-(defun taiwan-calendar-astro-from-gregorian (g)
+(defun taiwan-holidays-astro-from-gregorian (g)
   (calendar-astro-from-absolute
    (calendar-absolute-from-gregorian g)))
 
-(defun taiwan-calendar-next-solar-term (date)
+(defun taiwan-holidays-next-solar-term (date)
   "Return next solar term's data after DATE.
 Each solar term is separated by 15 longtitude degrees or so, plus an
 extra day appended."
-  (taiwan-calendar-gregorian-from-astro
+  (taiwan-holidays-gregorian-from-astro
    (solar-date-next-longitude
     (calendar-astro-from-absolute
      (1+ (calendar-absolute-from-gregorian date))) 15)))
 
-(defun taiwan-calendar-get-holiday (date)
+(defun taiwan-holidays-get-holiday (date)
   (when (and (boundp 'displayed-month)
              (boundp 'displayed-year))
     (let ((holidays (calendar-holiday-list))
@@ -464,54 +464,54 @@ extra day appended."
       str)))
 
 ;; cached solar terms for two neighbour years at most.
-(defvar taiwan-calendar-solar-term-alist nil) ; e.g., '(((1 20 2008) "春分") ...)
-(defvar taiwan-calendar-solar-term-years nil)
+(defvar taiwan-holidays-solar-term-alist nil) ; e.g., '(((1 20 2008) "春分") ...)
+(defvar taiwan-holidays-solar-term-years nil)
 
-(defun taiwan-calendar-sync-solar-term (year)
-  "Sync `taiwan-calendar-solar-term-alist' and `taiwan-calendar-solar-term-years' to YEAR."
-  (cond ((or (not taiwan-calendar-solar-term-years)
+(defun taiwan-holidays-sync-solar-term (year)
+  "Sync `taiwan-holidays-solar-term-alist' and `taiwan-holidays-solar-term-years' to YEAR."
+  (cond ((or (not taiwan-holidays-solar-term-years)
              ;; TODO: Seems calendar-update-mode-line is called too early in
              ;; calendar-mode.
              (not (boundp 'displayed-year))
              (not (boundp 'displayed-month)))
-         (setq taiwan-calendar-solar-term-alist
-               (taiwan-calendar-solar-term-alist-new year))
-         (setq taiwan-calendar-solar-term-years (list year)))
-        ((not (memq year taiwan-calendar-solar-term-years))
-         (setq taiwan-calendar-solar-term-alist
+         (setq taiwan-holidays-solar-term-alist
+               (taiwan-holidays-solar-term-alist-new year))
+         (setq taiwan-holidays-solar-term-years (list year)))
+        ((not (memq year taiwan-holidays-solar-term-years))
+         (setq taiwan-holidays-solar-term-alist
                (append
                 (remove-if-not (lambda (i) (eq (caddar i) displayed-year))
-                               taiwan-calendar-solar-term-alist)
-                (taiwan-calendar-solar-term-alist-new year)))
-         (setq taiwan-calendar-solar-term-years
+                               taiwan-holidays-solar-term-alist)
+                (taiwan-holidays-solar-term-alist-new year)))
+         (setq taiwan-holidays-solar-term-years
                (cons year (remove-if-not (lambda (i) (eq i displayed-year))
-                                         taiwan-calendar-solar-term-years))))))
+                                         taiwan-holidays-solar-term-years))))))
 
 ;; When months are: '(11 12 1), '(12 1 2)
-(defun taiwan-calendar-cross-year-view-p ()
+(defun taiwan-holidays-cross-year-view-p ()
   (or (= displayed-month 12) (= displayed-month 1)))
 
 ;; ,----
 ;; | week
 ;; `----
 
-(defun taiwan-calendar-week-of-date (date)
+(defun taiwan-holidays-week-of-date (date)
   "Get week number from DATE."
   (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian date))))
 
-(defun taiwan-calendar-custom-week-of-date (date)
-  "Similar to `taiwan-calendar-week-of-date' but starting from `taiwan-calendar-custom-week-start-date'."
+(defun taiwan-holidays-custom-week-of-date (date)
+  "Similar to `taiwan-holidays-week-of-date' but starting from `taiwan-holidays-custom-week-start-date'."
   (let ((y (calendar-extract-year date)))
     (when (or (< (calendar-extract-month date)
-                 (car taiwan-calendar-custom-week-start-date))
+                 (car taiwan-holidays-custom-week-start-date))
               (< (calendar-extract-day date)
-                 (cadr taiwan-calendar-custom-week-start-date)))
+                 (cadr taiwan-holidays-custom-week-start-date)))
       (setq y (1- y)))
-    (ceiling (/ (taiwan-calendar-days-between
-                 date (append taiwan-calendar-custom-week-start-date (list y)))
+    (ceiling (/ (taiwan-holidays-days-between
+                 date (append taiwan-holidays-custom-week-start-date (list y)))
                 7.0))))
 
-(defun taiwan-calendar-days-between (date1 date2)
+(defun taiwan-holidays-days-between (date1 date2)
   (apply '- (mapcar 'calendar-absolute-from-gregorian (list date1 date2))))
 
 
@@ -532,16 +532,16 @@ N congruent to 1 gives the first name, N congruent to 2 gives the second name,
 
 (defadvice calendar-mark-holidays (around mark-different-holidays activate)
   "Mark holidays with different priorities."
-  (let ((calendar-holiday-marker 'taiwan-calendar-important-holiday-face)
-        (calendar-holidays taiwan-calendar-important-holidays))
+  (let ((calendar-holiday-marker 'taiwan-holidays-important-holiday-face)
+        (calendar-holidays taiwan-holidays-important-holidays))
     ad-do-it)
-  (let ((calendar-holiday-marker 'taiwan-calendar-general-holiday-face)
-        (calendar-holidays taiwan-calendar-general-holidays))
+  (let ((calendar-holiday-marker 'taiwan-holidays-general-holiday-face)
+        (calendar-holidays taiwan-holidays-general-holidays))
     ad-do-it)
   (let ((calendar-holidays
          (remove-if (lambda (i)
-                      (or (member i taiwan-calendar-important-holidays)
-                          (member i taiwan-calendar-general-holidays)))
+                      (or (member i taiwan-holidays-important-holidays)
+                          (member i taiwan-holidays-general-holidays)))
                     calendar-holidays)))
     ad-do-it))
 
@@ -575,7 +575,7 @@ line."
        (progn
          (setq string
                (calendar-day-name (mod (+ calendar-week-start-day i) 7) nil t))
-         ;; (taiwan-calendar-day-short-name (mod (+ calendar-week-start-day i) 7)))
+         ;; (taiwan-holidays-day-short-name (mod (+ calendar-week-start-day i) 7)))
          (if enable-multibyte-characters
              (truncate-string-to-width string calendar-day-header-width)
            (substring string 0 calendar-day-header-width)))
@@ -605,12 +605,12 @@ line."
 
 
 ;; setup
-(taiwan-calendar-setup)
+(taiwan-holidays-setup)
 
-(provide 'taiwan-calendar)
+(provide 'taiwan-holidays)
 
 ;;; Local Variables: ***
 ;;; coding: utf-8 ***
 ;;; End: ***
 
-;;; taiwan-calendar.el ends here
+;;; taiwan-holidays.el ends here

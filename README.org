@@ -6,7 +6,10 @@ Localized calendar for Emacsers in Taiwan.
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "~/.emacs.d/git/taiwan-holidays.el/")
 (require 'taiwan-holidays)
-(setq mark-holidays-in-calendar t)
+
+;; (setq mark-holidays-in-calendar t)  ; Seems deprecated by Emacs 25.3
+(setq calendar-mark-holidays-flag t)  ; Us this instead
+
 (setq taiwan-holidays-important-holidays taiwan-holidays-taiwan-holidays)
 (setq calendar-holidays taiwan-holidays-important-holidays)
 #+END_SRC

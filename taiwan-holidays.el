@@ -336,9 +336,10 @@ See `taiwan-holidays-solar-term-name' for a list of solar term names ."
   (setq diary-date-forms chinese-date-diary-pattern)
 
   ;; chinese month and year
-  (setq calendar-font-lock-keywords
-        (append calendar-font-lock-keywords
-                '(("[0-9]+年\\ *[0-9]+月" . font-lock-function-name-face))))
+  (if (< emacs-major-version 27)
+      (setq calendar-font-lock-keywords
+            (append calendar-font-lock-keywords
+                    '(("[0-9]+年\\ *[0-9]+月" . font-lock-function-name-face)))))
 
   (setq calendar-chinese-celestial-stem taiwan-holidays-celestial-stem
 	calendar-chinese-terrestrial-branch taiwan-holidays-terrestrial-branch)

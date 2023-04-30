@@ -481,11 +481,11 @@ extra day appended."
         ((not (memq year taiwan-holidays-solar-term-years))
          (setq taiwan-holidays-solar-term-alist
                (append
-                (remove-if-not (lambda (i) (eq (caddar i) displayed-year))
+                (cl-remove-if-not (lambda (i) (eq (caddar i) displayed-year))
                                taiwan-holidays-solar-term-alist)
                 (taiwan-holidays-solar-term-alist-new year)))
          (setq taiwan-holidays-solar-term-years
-               (cons year (remove-if-not (lambda (i) (eq i displayed-year))
+               (cons year (cl-remove-if-not (lambda (i) (eq i displayed-year))
                                          taiwan-holidays-solar-term-years))))))
 
 ;; When months are: '(11 12 1), '(12 1 2)
@@ -540,7 +540,7 @@ N congruent to 1 gives the first name, N congruent to 2 gives the second name,
         (calendar-holidays taiwan-holidays-general-holidays))
     ad-do-it)
   (let ((calendar-holidays
-         (remove-if (lambda (i)
+         (cl-remove-if (lambda (i)
                       (or (member i taiwan-holidays-important-holidays)
                           (member i taiwan-holidays-general-holidays)))
                     calendar-holidays)))
